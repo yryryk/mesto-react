@@ -1,12 +1,14 @@
 import api from '../utils/Api';
+import Card from './Card';
 import { useState,  useEffect} from 'react';
 
 function Main(props) {
-  const {onEditProfile, onAddPlace, onEditAvatar} = props.handlers;
+  const {onEditProfile, onAddPlace, onEditAvatar, onCardClick} = props.handlers;
 
   const [userName, setUserName] = useState('giq');
   const [userDescription, setUserDescription] = useState('sr');
   const [userAvatar, setUserAvatar] = useState('../../../images/image.jpg');
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     api.getUserInfo()
@@ -14,6 +16,16 @@ function Main(props) {
       setUserName(result.name);
       setUserDescription(result.about);
       setUserAvatar(result.avatar);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  },[]);
+
+  useEffect(() => {
+    api.getInitialCards()
+    .then((result) => {
+      setCards(result)
     })
     .catch((err) => {
       console.log(err);
@@ -35,6 +47,9 @@ function Main(props) {
       </section>
 
       <section className="elements" aria-label="Секция с картинками">
+        {cards.map((card) => (
+          <Card card ={card} onCardClick={onCardClick} key={card._id} />
+        ))}
       </section>
     </main>
   );
