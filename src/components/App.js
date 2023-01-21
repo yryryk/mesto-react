@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import api from '../utils/Api';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 function App() {
@@ -61,10 +62,26 @@ function App() {
     });
   }
 
-  function handleUpdateUser(inputValuesUserInfo) {
-    api.setUserInfo(inputValuesUserInfo)
+  function handleUpdateUser(inputValuesUser) {
+    api.setUserInfo(inputValuesUser)
     .then((result) => {
       setCurrentUser(result);
+      closeAllPopups();
+    })
+  }
+
+  function handleUpdateAvatar(inputValuesAvatar) {
+    api.setUserAvatar(inputValuesAvatar)
+    .then((result) => {
+      setCurrentUser(result);
+      closeAllPopups();
+    })
+  }
+
+  function handleAddPlace(inputValuesPlace) {
+    api.setCard(inputValuesPlace)
+    .then((newCard) => {
+      setCards([newCard, ...cards]);
       closeAllPopups();
     })
   }
@@ -78,23 +95,10 @@ function App() {
 
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
-        <PopupWithForm name='element' title='Новое место' buttonText='Создать' isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
-          <label className="popup__field">
-            <input id="text-input" type="text" name="name" className="input" placeholder="Название" minLength="2" maxLength="30" required />
-            <span className="text-input-error popup__input-error"></span>
-          </label>
-          <label className="popup__field">
-            <input id="link-input" name="link" className="input" placeholder="Ссылка на картинку" type="url" required />
-            <span className="link-input-error popup__input-error"></span>
-          </label>
-        </PopupWithForm>
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
 
-        <PopupWithForm name='avatar' title='Обновить аватар' buttonText='Сохранить' isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
-          <label className="popup__field">
-            <input id="avatar-input" type="url" name="avatar" className="input" placeholder="Ссылка на аватар" required />
-            <span className="avatar-input-error popup__input-error"></span>
-          </label>
-        </PopupWithForm>
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
         {/* <div className="popup popup_type_accept" id="popup-accept">
