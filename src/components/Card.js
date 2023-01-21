@@ -14,16 +14,25 @@ function Card(props) {
   function handleClick() {
     props.onCardClick(card);
   }
+
+  function handleLikeClick() {
+    props.onCardLike(card);
+  }
+
+  function handleDeleteClick() {
+    props.onCardDelete(card);
+  }
+
   return (
     <div className="elements__photo">
       <img className="elements__image" src={card.link} alt={card.name} onClick={handleClick} />
       <div className="elements__paraphernalia">
         <h2 className="elements__title">{card.name}</h2>
         <div className="elements__like-container">
-          <button aria-label="поставить лайк" type="button" className={cardLikeButtonClassName}></button>
-          <span className="elements__like-value"></span>
+          <button aria-label="поставить лайк" type="button" className={cardLikeButtonClassName} onClick={handleLikeClick}></button>
+          <span className="elements__like-value">{card.likes.length}</span>
         </div>
-        {isOwn && <button aria-label="кнопка удаления" type="button" className="button-opacity elements__delete-button" />}
+        {isOwn && <button aria-label="кнопка удаления" type="button" className="button-opacity elements__delete-button"  onClick={handleDeleteClick} />}
       </div>
     </div>
   );

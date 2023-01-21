@@ -57,20 +57,16 @@ class Api {
     .then(this._checkExecution);
   }
 
-  addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'PUT',
-      headers: this._headers
-    })
-    .then(this._checkExecution);
-  }
-
-  deleteLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+  changeLikeCardStatus(cardId, isLiked) {
+    if(isLiked) {return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: this._headers
     })
-    .then(this._checkExecution);
+    .then(this._checkExecution);}else {  return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+      method: 'PUT',
+      headers: this._headers
+    })
+    .then(this._checkExecution);}
   }
 
   setUserAvatar(inputValues) {

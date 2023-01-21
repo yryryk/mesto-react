@@ -13,16 +13,19 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    api.getUserInfo()
-    .then((result) => {
-      setCurrentUser(result);
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+    .then(([resultInfo, resultCards]) => {
+      setCurrentUser(resultInfo);
+      setCards(resultCards);
     })
     .catch((err) => {
       console.log(err);
-    })
+    });
   },[]);
+
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -44,11 +47,25 @@ function App() {
     setSelectedCard(card);
   }
 
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    });
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id).then(() => {
+      setCards((state) =>[...state.filter((c) => c._id !== card._id)]);
+    });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <Header />
-        <Main handlers = {{onEditProfile: handleEditProfileClick, onAddPlace: handleAddPlaceClick, onEditAvatar: handleEditAvatarClick, onCardClick: handleCardClick}} />
+        <Main handlers={{onEditProfile: handleEditProfileClick, onAddPlace: handleAddPlaceClick, onEditAvatar: handleEditAvatarClick, onCardClick: handleCardClick, onCardLike: handleCardLike, onCardDelete: handleCardDelete}}  cards={cards} />
         <Footer />
         <PopupWithForm name='profile' title='Редактировать профиль' buttonText='Сохранить' isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
           <label className="popup__field">

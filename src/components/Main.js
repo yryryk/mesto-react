@@ -1,23 +1,10 @@
-import api from '../utils/Api';
 import Card from './Card';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
-import { useState,  useEffect, useContext} from 'react';
+import { useContext} from 'react';
 
 function Main(props) {
-  const {onEditProfile, onAddPlace, onEditAvatar, onCardClick} = props.handlers;
-
+  const {onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete} = props.handlers;
   const currentUser = useContext(CurrentUserContext);
-  const [cards, setCards] = useState([]);
-
-  useEffect(() => {
-    api.getInitialCards()
-    .then((result) => {
-      setCards(result)
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  },[]);
 
   return (
     <main>
@@ -34,8 +21,8 @@ function Main(props) {
       </section>
 
       <section className="elements" aria-label="Секция с картинками">
-        {cards.map((card) => (
-          <Card card ={card} onCardClick={onCardClick} key={card._id} />
+        {props.cards.map((card) => (
+          <Card card ={card} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} key={card._id} />
         ))}
       </section>
     </main>
