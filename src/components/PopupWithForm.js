@@ -5,7 +5,7 @@ function PopupWithForm(props) {
       <div className="popup__window">
         <button aria-label="кнопка закрытия" type="button" className="button-opacity popup__close-button" onClick={props.onClose}></button>
         <h2 className="popup__title">{props.title}</h2>
-        <form className="popup__form" name={props.name} noValidate>
+        <form className="popup__form" name={props.name} onSubmit={props.onSubmit} noValidate>
           {props.children}
           <button aria-label="кнопка сохранить" type="submit" className="popup__submit-button">{props.buttonText}</button>
         </form>
