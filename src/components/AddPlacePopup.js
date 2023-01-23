@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
 
 function AddPlacePopup(props) {
@@ -22,6 +22,13 @@ function AddPlacePopup(props) {
       link,
     });
   }
+
+  useEffect(() => {
+    if(props.isOpen) {
+      setName('');
+      setLink('');
+    }
+  }, [props.isOpen]);
 
   return (
     <PopupWithForm name='element' title='Новое место' buttonText='Создать' {...props}  onSubmit={handleSubmit}>
