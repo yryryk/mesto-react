@@ -1,43 +1,46 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import PopupWithForm from './PopupWithForm';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import { useForm } from '../hooks/useForm';
 
 function EditProfilePopup(props) {
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const {values, handleChange, setValues} = useForm({
+    name: '',
+    about: '',
+  });
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-  }, [currentUser, props.isOpen]);
+    setValues({
+      name: currentUser.name,
+      about: currentUser.about,
+    });
+  }, [currentUser, props.isOpen, setValues]);
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-  function handleDescriptionChange(e) {
-    setDescription(e.target.value);
-  }
-
+  useEffect(() => {
+    if(!props.isOpen) {
+      setValues({
+        name: '',
+        about: '',
+      });
+    }
+  }, [props.isOpen, setValues]);
+  
   function handleSubmit(e) {
     e.preventDefault();
 
-    props.onUpdateUser({
-      name,
-      about: description,
-    });
+    props.onUpdateUser(values);
   }
 
   return (
   <PopupWithForm name='profile' title='Редактировать профиль' buttonText='Сохранить' {...props}  onSubmit={handleSubmit}>
     <label className="popup__field">
-      <input id="title-input" type="text" name="name" className="input" placeholder="Имя" onChange={handleNameChange} value={name} minLength="2" maxLength="40" required />
+      <input id="title-input" type="text" name="name" className="input" placeholder="Имя" onChange={handleChange} value={values.name} minLength="2" maxLength="40" required />
       <span className="title-input-error popup__input-error"></span>
     </label>
     <label className="popup__field">
-      <input id="subtitle-input" type="text" name="about" className="input" placeholder="Описание" onChange={handleDescriptionChange} value={description} minLength="2" maxLength="200" required />
+      <input id="subtitle-input" type="text" name="about" className="input" placeholder="Описание" onChange={handleChange} value={values.about} minLength="2" maxLength="200" required />
       <span className="subtitle-input-error popup__input-error"></span>
     </label>
   </PopupWithForm>
