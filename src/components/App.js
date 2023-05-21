@@ -120,7 +120,8 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="App">
+      <>
+
         <Header />
         <Main handlers={{onEditProfile: handleEditProfileClick, onAddPlace: handleAddPlaceClick, onEditAvatar: handleEditAvatarClick, onCardClick: handleCardClick, onCardLike: handleCardLike, onCardDelete: handleCardDelete}}  cards={cards} />
         <Footer />
@@ -143,7 +144,7 @@ function App() {
           </div>
         </div> */}
 
-      </div>
+      </>
     </CurrentUserContext.Provider>
 
   );
